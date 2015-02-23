@@ -3,6 +3,7 @@
 #include "commands.hpp"
 #include "logger.hpp"
 #include "radio.hpp"
+#include "bldc.hpp"
 
 Ticker lifeLight;
 DigitalOut ledOne(LED1);
@@ -29,6 +30,12 @@ int main(void)
 	
 	//initRadioThread();
 	initConsoleRoutine();
+
+
+	//	motor test
+	BLDC motor();	//	TODO: specify pin names
+	motor.setDutyCycle(0.05);
+	while (true) motor.update()
 }
 
 /**
