@@ -2,6 +2,26 @@
 
 //http://www.maxonmotorusa.com/medias/sys_master/8798093541406/EC-Technik-kurz-und-buendig-11-EN-026-027.pdf?attachment=true
 //Document contains relation from Hall State to Phase Voltages
+
+
+static struct DriverState {
+    float phase1;
+    float phase2;
+    float phase3;
+    //0 is high impedance (high Z)
+    //-1 is ground
+    //1 is duty cycle
+}DriverStates[8] = {
+    { 0, 0, 0}, //fail state, all phases high-Z
+    { 1, 0,-1},
+    {-1, 1, 0},
+    { 0, 1,-1},
+    { 0,-1, 1},
+    { 1,-1, 0},
+    {-1, 0, 1},
+    { 0, 0, 0} //fail state, all phases high-Z
+};
+
 class BLDC {
 public:
     BLDC(PinName h1, PinName h2, PinName h3,
@@ -32,7 +52,7 @@ public:
     void setForward(bool forward = true) {
         _forward = forward;
     }
-
+ 
     bool isForward() const {
         return _forward;
     }
@@ -64,6 +84,8 @@ private:
     bool _forward;
 
     bool _hallFault;
+
+
 
     DigitalIn _hall1;
     DigitalIn _hall2;
