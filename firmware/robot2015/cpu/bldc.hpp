@@ -31,8 +31,9 @@ static const DriverState DriverStates[8] = {
 class BLDC {
 public:
     BLDC(PinName h1, PinName h2, PinName h3,
-        PinName p1h, PinName p2h, PinName p3h,
-        PinName p1l, PinName p2l, PinName p3l) :
+        PinName p1h, PinName p1l,
+        PinName p2h, PinName p2l,
+        PinName p3h, PinName p3l) :
             _forward(true), _hallFault(false),
             _hall1(h1), _hall2(h2), _hall3(h3),
             _phase1h(p1h), _phase2h(p2h), _phase3h(p3h),
@@ -53,7 +54,7 @@ public:
     void update() {
         int hallValue = (_hall3.read() << 2) | (_hall2.read() << 1) | (_hall1.read());
 
-        printf("hall: %d%d%d - ", _hall3.read(), _hall2.read(), _hall1.read());
+        // printf("hall: %d%d%d - ", _hall3.read(), _hall2.read(), _hall1.read());
 
         //  check for hall faults
         //  000 and 111 are invalid hall codes
@@ -68,22 +69,40 @@ public:
         }
 
 
-        _phase1h = (state.phase1 == 1) ? 1 : 0;
-        _phase1l = (state.phase1 == -1) ? 1 : 0;
+        DigitalOut outs[] = {
+            _phase1h,
+            _phase1l,
+
+            _phase2h,
+            _phase2l,
+
+            _phase3h,
+            _phase3l
+        };
+
+        int newValues[] = {
+            (state.phase1 == 1) ? 1 : 0,
+            (state.phase1 == -1) ? 1 : 0,
+
+            (state.phase2 == 1) ? 1 : 0,
+            (state.phase2 == -1) ? 1 : 0,
+
+            (state.phase3 == 1) ? 1 : 0,
+            (state.phase3 == -1) ? 1 : 0,
+        };
+
+        for (int i = 0; i < 6; i++) {
+            if (outs[i].read() != newValues[i]) outs[i].write(newValues[i]);
+        }
+
         h1ind = _phase1h;
-
-        _phase2h = (state.phase2 == 1) ? 1 : 0;
-        _phase2l = (state.phase2 == -1) ? 1 : 0;
         h2ind = _phase2h;
-
-        _phase3h = (state.phase3 == 1) ? 1 : 0;
-        _phase3l = (state.phase3 == -1) ? 1 : 0;
         h3ind = _phase3h;
 
 
-        printf("high: %d%d%d", _phase1h.read(), _phase2h.read(), _phase3h.read());
+        // printf("high: %d%d%d", _phase1h.read(), _phase2h.read(), _phase3h.read());
 
-        printf(" - low: %d%d%d\r\n", _phase1l.read(), _phase2l.read(), _phase3l.read());
+        // printf(" - low: %d%d%d\r\n", _phase1l.read(), _phase2l.read(), _phase3l.read());
     }
 
 

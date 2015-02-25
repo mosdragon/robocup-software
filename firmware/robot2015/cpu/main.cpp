@@ -34,10 +34,14 @@ int main(void)
 
 	//	motor test
 	BLDC motor(
-		p23, p22, p21,
-		p15, p16, p17,
-		p18, p19, p20);
-	while (true) motor.update();
+		p23, p22, p21,	//	h1, h2, h3
+		p15, p16,		//	AH, AL
+		p17, p18,		//	BH, BL
+		p19, p20);		//	CH,CL
+	while (true) {
+		motor.update();
+		wait_us(1);
+	}
 }
 
 /**
