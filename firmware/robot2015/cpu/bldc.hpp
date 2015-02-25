@@ -3,6 +3,10 @@
 //http://www.maxonmotorusa.com/medias/sys_master/8798093541406/EC-Technik-kurz-und-buendig-11-EN-026-027.pdf?attachment=true
 //Document contains relation from Hall State to Phase Voltages
 
+DigitalOut h1ind(LED1);
+DigitalOut h2ind(LED2);
+DigitalOut h3ind(LED3);
+
 
 typedef struct {
     int phase1;
@@ -49,6 +53,8 @@ public:
     void update() {
         int hallValue = (_hall3.read() << 2) | (_hall2.read() << 1) | (_hall1.read());
 
+        printf("hall: %d%d%d - ", _hall3.read(), _hall2.read(), _hall1.read());
+
         //  check for hall faults
         //  000 and 111 are invalid hall codes
         _hallFault = (hallValue == 0b111) || (hallValue == 0b000);
@@ -61,14 +67,23 @@ public:
             state.phase3 *= -1;
         }
 
-        _phase1h = state.phase1 == 1;
-        _phase1l = state.phase1 == -1;
 
-        _phase2h = state.phase2 == 1;
-        _phase2l = state.phase2 == -1;
+        _phase1h = (state.phase1 == 1) ? 1 : 0;
+        _phase1l = (state.phase1 == -1) ? 1 : 0;
+        h1ind = _phase1h;
 
-        _phase3h = state.phase3 == 1;
-        _phase3l = state.phase3 == -1;
+        _phase2h = (state.phase2 == 1) ? 1 : 0;
+        _phase2l = (state.phase2 == -1) ? 1 : 0;
+        h2ind = _phase2h;
+
+        _phase3h = (state.phase3 == 1) ? 1 : 0;
+        _phase3l = (state.phase3 == -1) ? 1 : 0;
+        h3ind = _phase3h;
+
+
+        printf("high: %d%d%d", _phase1h.read(), _phase2h.read(), _phase3h.read());
+
+        printf(" - low: %d%d%d\r\n", _phase1l.read(), _phase2l.read(), _phase3l.read());
     }
 
 

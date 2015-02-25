@@ -22,18 +22,21 @@ void initConsoleRoutine(void);
  */
 int main(void) 
 {
-	setISRPriorities();
-	lifeLight.attach(&imAlive, 0.25);
+	// setISRPriorities();
+	// lifeLight.attach(&imAlive, 0.25);
 
-	isLogging = true;
-	rjLogLevel = INF2;
+	// isLogging = true;
+	// rjLogLevel = INF2;
 	
-	//initRadioThread();
-	initConsoleRoutine();
+	// //initRadioThread();
+	// initConsoleRoutine();
 
 
 	//	motor test
-	BLDC motor(p10, p12, p13, p14, p15, p6, p7, p8, p9);
+	BLDC motor(
+		p23, p22, p21,
+		p15, p16, p17,
+		p18, p19, p20);
 	while (true) motor.update();
 }
 
