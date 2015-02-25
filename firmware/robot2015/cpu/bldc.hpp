@@ -4,14 +4,16 @@
 //Document contains relation from Hall State to Phase Voltages
 
 
-static struct DriverState {
-    float phase1;
-    float phase2;
-    float phase3;
+typedef struct {
+    int phase1;
+    int phase2;
+    int phase3;
     //0 is high impedance (high Z)
     //-1 is ground
     //1 is duty cycle
-}DriverStates[8] = {
+} DriverState;
+
+static const DriverState DriverStates[8] = {
     { 0, 0, 0}, //fail state, all phases high-Z
     { 1, 0,-1},
     {-1, 1, 0},
@@ -27,27 +29,14 @@ public:
     BLDC(PinName h1, PinName h2, PinName h3,
         PinName p1h, PinName p2h, PinName p3h,
         PinName p1l, PinName p2l, PinName p3l) :
+            _forward(true), _hallFault(false),
             _hall1(h1), _hall2(h2), _hall3(h3),
             _phase1h(p1h), _phase2h(p2h), _phase3h(p3h),
-            _phase1l(p1l), _phase2l(p2l), _phase3l(p3l),
-            _dutyCycle(0), _forward(true), _hallFault(false)
+            _phase1l(p1l), _phase2l(p2l), _phase3l(p3l)
     {
 
     }
 
-
-    void setDutyCycle(float dutyCycle) {
-        _dutyCycle = dutyCycle;
-        if (_dutyCycle > 1) {
-            _dutyCycle = 1;
-        } else if (dutyCycle < 0) {
-            _dutyCycle = 0;
-        }
-    }
-
-    float dutyCycle() const {
-        return _dutyCycle;
-    }
 
     void setForward(bool forward = true) {
         _forward = forward;
@@ -57,20 +46,29 @@ public:
         return _forward;
     }
 
-    void stop() {
-        setDutyCycle(0);
-        update();
-    }
-
     void update() {
         int hallValue = (_hall3.read() << 2) | (_hall2.read() << 1) | (_hall1.read());
 
         //  check for hall faults
         //  000 and 111 are invalid hall codes
         _hallFault = (hallValue == 0b111) || (hallValue == 0b000);
-        if (_hallFault) std::cout << "Encountered a hall fault!" << std::endl;
+        // if (_hallFault) std::cout << "Encountered a hall fault!" << std::endl;
 
+        DriverState state = DriverStates[hallValue];
+        if (!_forward) {
+            state.phase1 *= -1;
+            state.phase2 *= -1;
+            state.phase3 *= -1;
+        }
 
+        _phase1h = state.phase1 == 1;
+        _phase1l = state.phase1 == -1;
+
+        _phase2h = state.phase2 == 1;
+        _phase2l = state.phase2 == -1;
+
+        _phase3h = state.phase3 == 1;
+        _phase3l = state.phase3 == -1;
     }
 
 
@@ -85,20 +83,15 @@ private:
 
     bool _hallFault;
 
-
-
     DigitalIn _hall1;
     DigitalIn _hall2;
     DigitalIn _hall3;
 
-    PwmOut _phase1h;
-    PwmOut _phase2h;
-    PwmOut _phase2h;
+    DigitalOut _phase1h;
+    DigitalOut _phase2h;
+    DigitalOut _phase3h;
 
-    PwmOut _phase1l;
-    PwmOut _phase2l;
-    PwmOut _phase3l;   
+    DigitalOut _phase1l;
+    DigitalOut _phase2l;
+    DigitalOut _phase3l;   
 };
-
-
-

@@ -33,9 +33,8 @@ int main(void)
 
 
 	//	motor test
-	BLDC motor();	//	TODO: specify pin names
-	motor.setDutyCycle(0.05);
-	while (true) motor.update()
+	BLDC motor(p10, p12, p13, p14, p15, p6, p7, p8, p9);
+	while (true) motor.update();
 }
 
 /**
