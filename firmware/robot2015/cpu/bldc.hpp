@@ -61,15 +61,12 @@ public:
         _hallFault = (hallValue == 0b111) || (hallValue == 0b000);
         // if (_hallFault) std::cout << "Encountered a hall fault!" << std::endl;
 
-        int nextState = hallValue + (_forward ? 1 : -1);
-
-        DriverState state = DriverStates[nextState];
-        // if (!_forward) {
-        //     state.phase1 *= -1;
-        //     state.phase2 *= -1;
-        //     state.phase3 *= -1;
-        // }
-
+        DriverState state = DriverStates[hallValue];
+        if (!_forward) {
+            state.phase1 *= -1;
+            state.phase2 *= -1;
+            state.phase3 *= -1;
+        }
 
 
         DigitalOut outs[] = {
