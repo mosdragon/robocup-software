@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 //http://www.maxonmotorusa.com/medias/sys_master/8798093541406/EC-Technik-kurz-und-buendig-11-EN-026-027.pdf?attachment=true
 //Document contains relation from Hall State to Phase Voltages
 
@@ -31,20 +33,11 @@ static const DriverState DriverStates[8] = {
 class BLDC {
 public:
     BLDC(PinName h1, PinName h2, PinName h3, PinName p1h, PinName p2h, PinName p3h) :
-            _forward(true), _hallFault(false),
+            _power(0.5), _hallFault(false),
             _hall1(h1), _hall2(h2), _hall3(h3),
             _phase1h(p1h), _phase2h(p2h), _phase3h(p3h)
     {
 
-    }
-
-
-    void setForward(bool forward = true) {
-        _forward = forward;
-    }
- 
-    bool isForward() const {
-        return _forward;
     }
 
     void update() {
@@ -58,23 +51,25 @@ public:
         // if (_hallFault) std::cout << "Encountered a hall fault!" << std::endl;
 
         DriverState state = DriverStates[hallValue];
-        if (!_forward) {
+
+        //  negate phases for backwards drive
+        if (_power < 0) {
             state.phase1 *= -1;
             state.phase2 *= -1;
             state.phase3 *= -1;
         }
 
 
-        DigitalOut outs[] = {
+        PwmOut outs[] = {
             _phase1h,
             _phase2h,
             _phase3h,
         };
 
-        int newValues[] = {
-            (state.phase1 == 1) ? 1 : 0,
-            (state.phase2 == 1) ? 1 : 0,
-            (state.phase3 == 1) ? 1 : 0,
+        float newValues[] = {
+            ((state.phase1 == 1) ? 1 : 0) * abs(_power),
+            ((state.phase2 == 1) ? 1 : 0) * abs(_power),
+            ((state.phase3 == 1) ? 1 : 0) * abs(_power),
         };
 
         for (int i = 0; i < 3; i++) {
@@ -89,14 +84,20 @@ public:
     }
 
 
+    //  can be + or - for forwards and backwards.  Ranges from zero to one
+    void setPower(float power) {
+        if (abs(power) > 1) power = signbit(power) * 1.0; //  limit to [-1, 1]
+        _power = power;
+    }
+
+
     bool hasHallFault() const {
         return _hallFault;
     }
 
 
 private:
-    float _dutyCycle;
-    bool _forward;
+    float _power;
 
     bool _hallFault;
 
@@ -104,7 +105,7 @@ private:
     DigitalIn _hall2;
     DigitalIn _hall3;
 
-    DigitalOut _phase1h;
-    DigitalOut _phase2h;
-    DigitalOut _phase3h;
+    PwmOut _phase1h;
+    PwmOut _phase2h;
+    PwmOut _phase3h;
 };
