@@ -30,14 +30,10 @@ static const DriverState DriverStates[8] = {
 
 class BLDC {
 public:
-    BLDC(PinName h1, PinName h2, PinName h3,
-        PinName p1h, PinName p1l,
-        PinName p2h, PinName p2l,
-        PinName p3h, PinName p3l) :
+    BLDC(PinName h1, PinName h2, PinName h3, PinName p1h, PinName p2h, PinName p3h) :
             _forward(true), _hallFault(false),
             _hall1(h1), _hall2(h2), _hall3(h3),
-            _phase1h(p1h), _phase2h(p2h), _phase3h(p3h),
-            _phase1l(p1l), _phase2l(p2l), _phase3l(p3l)
+            _phase1h(p1h), _phase2h(p2h), _phase3h(p3h)
     {
 
     }
@@ -71,27 +67,17 @@ public:
 
         DigitalOut outs[] = {
             _phase1h,
-            _phase1l,
-
             _phase2h,
-            _phase2l,
-
             _phase3h,
-            _phase3l
         };
 
         int newValues[] = {
             (state.phase1 == 1) ? 1 : 0,
-            (state.phase1 == -1) ? 1 : 0,
-
             (state.phase2 == 1) ? 1 : 0,
-            (state.phase2 == -1) ? 1 : 0,
-
             (state.phase3 == 1) ? 1 : 0,
-            (state.phase3 == -1) ? 1 : 0,
         };
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 3; i++) {
             if (outs[i].read() != newValues[i]) outs[i].write(newValues[i]);
         }
 
@@ -99,10 +85,7 @@ public:
         h2ind = _phase2h;
         h3ind = _phase3h;
 
-
-        // printf("high: %d%d%d", _phase1h.read(), _phase2h.read(), _phase3h.read());
-
-        // printf(" - low: %d%d%d\r\n", _phase1l.read(), _phase2l.read(), _phase3l.read());
+        // printf("high: %d%d%d\r\n", _phase1h.read(), _phase2h.read(), _phase3h.read());
     }
 
 
@@ -124,8 +107,4 @@ private:
     DigitalOut _phase1h;
     DigitalOut _phase2h;
     DigitalOut _phase3h;
-
-    DigitalOut _phase1l;
-    DigitalOut _phase2l;
-    DigitalOut _phase3l;   
 };
