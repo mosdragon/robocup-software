@@ -38,6 +38,7 @@ int main(void)
 		p15,		//	AH
 		p17,		//	BH
 		p19);		//	CH
+	motor.setPower(0.5);
 	while (true) {
 		motor.update();
 		wait_us(1);

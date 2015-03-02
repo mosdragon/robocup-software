@@ -90,6 +90,10 @@ public:
         _power = power;
     }
 
+    void operator=(float power0) {
+        setPower(power0);
+    }
+
 
     bool hasHallFault() const {
         return _hallFault;
