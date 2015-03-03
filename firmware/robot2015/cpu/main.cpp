@@ -43,6 +43,7 @@ int main(void)
 	while (true) {
 		//	not sure why this math is necessary, but it puts the value between 0 and 1
 		float power = 2*(pot.read() - 0.5);
+		power *= -1;
 		motor.setPower(power);
 		// printf("power: %f\r\n", power);
 		motor.update();

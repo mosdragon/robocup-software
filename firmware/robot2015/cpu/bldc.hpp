@@ -38,7 +38,7 @@ public:
             _phase1h(p1h), _phase2h(p2h), _phase3h(p3h)
     {
         //  note: setting the period of one pwm sets them all since they share the same global period value
-        _phase1h.period_us(500);
+        _phase1h.period_us(50);
     }
 
     void update() {
