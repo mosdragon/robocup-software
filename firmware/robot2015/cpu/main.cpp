@@ -8,6 +8,7 @@
 Ticker lifeLight;
 DigitalOut ledOne(LED1);
 DigitalOut ledTwo(LED2);
+AnalogIn pot(p18);
 
 /*
  * some forward declarations to make the code easier to read
@@ -35,11 +36,15 @@ int main(void)
 	//	motor test
 	BLDC motor(
 		p23, p22, p21,	//	h1, h2, h3
-		p15,		//	AH
-		p17,		//	BH
-		p19);		//	CH
+		p24,		//	AH
+		p25,		//	BH
+		p26);		//	CH
 	motor.setPower(0.5);
 	while (true) {
+		//	not sure why this math is necessary, but it puts the value between 0 and 1
+		float power = 2*(pot.read() - 0.5);
+		motor.setPower(power);
+		// printf("power: %f\r\n", power);
 		motor.update();
 		wait_us(1);
 	}

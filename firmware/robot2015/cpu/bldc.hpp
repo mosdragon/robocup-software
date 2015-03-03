@@ -37,7 +37,8 @@ public:
             _hall1(h1), _hall2(h2), _hall3(h3),
             _phase1h(p1h), _phase2h(p2h), _phase3h(p3h)
     {
-
+        //  note: setting the period of one pwm sets them all since they share the same global period value
+        _phase1h.period_us(500);
     }
 
     void update() {
@@ -63,7 +64,7 @@ public:
         PwmOut outs[] = {
             _phase1h,
             _phase2h,
-            _phase3h,
+            _phase3h
         };
 
         float newValues[] = {
@@ -73,14 +74,14 @@ public:
         };
 
         for (int i = 0; i < 3; i++) {
-            if (outs[i].read() != newValues[i]) outs[i].write(newValues[i]);
+            outs[i].write(newValues[i]);
         }
 
-        h1ind = _phase1h;
-        h2ind = _phase2h;
-        h3ind = _phase3h;
+        h1ind = outs[0] > 0 ? 1 : 0;
+        h2ind = outs[1] > 0 ? 1 : 0;
+        h3ind = outs[2] > 0 ? 1 : 0;
 
-        // printf("high: %d%d%d\r\n", _phase1h.read(), _phase2h.read(), _phase3h.read());
+        // printf("high: %.2f-%.2f-%.2f\r\n", _phase1h.read(), _phase2h.read(), _phase3h.read());
     }
 
 
