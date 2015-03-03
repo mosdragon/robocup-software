@@ -5,9 +5,9 @@
 //http://www.maxonmotorusa.com/medias/sys_master/8798093541406/EC-Technik-kurz-und-buendig-11-EN-026-027.pdf?attachment=true
 //Document contains relation from Hall State to Phase Voltages
 
-DigitalOut h1ind(LED1);
-DigitalOut h2ind(LED2);
-DigitalOut h3ind(LED3);
+DigitalOut hall1ind(LED1);
+DigitalOut hall2ind(LED2);
+DigitalOut hall3ind(LED3);
 
 
 typedef struct {
@@ -38,13 +38,13 @@ public:
             _phase1h(p1h), _phase2h(p2h), _phase3h(p3h)
     {
         //  note: setting the period of one pwm sets them all since they share the same global period value
-        _phase1h.period_us(50);
+        _phase1h.period_us(28);
     }
 
     void update() {
         int hallValue = (_hall3.read() << 2) | (_hall2.read() << 1) | (_hall1.read());
 
-        // printf("hall: %d%d%d - ", _hall3.read(), _hall2.read(), _hall1.read());
+        // printf("hall: %d%d%d\r\n", _hall3.read(), _hall2.read(), _hall1.read());
 
         //  check for hall faults
         //  000 and 111 are invalid hall codes
@@ -77,9 +77,9 @@ public:
             outs[i].write(newValues[i]);
         }
 
-        h1ind = outs[0] > 0 ? 1 : 0;
-        h2ind = outs[1] > 0 ? 1 : 0;
-        h3ind = outs[2] > 0 ? 1 : 0;
+        hall1ind = _hall1.read();
+        hall2ind = _hall2.read();
+        hall3ind = _hall3.read();
 
         // printf("high: %.2f-%.2f-%.2f\r\n", _phase1h.read(), _phase2h.read(), _phase3h.read());
     }
