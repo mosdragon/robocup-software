@@ -21,5 +21,5 @@ set(TOOLCHAIN TOOLCHAIN_GCC_ARM)
 # mbed official
 set(USE_RTOS true)
 set(USE_NET false)
-set(USE_USB false)
+set(USE_USB true)
 set(USE_DSP false)

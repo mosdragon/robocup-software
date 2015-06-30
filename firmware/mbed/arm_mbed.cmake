@@ -175,7 +175,7 @@ if(${USE_USB} STREQUAL "true")
   set(PY_USB_LIB_DIR      ${MBED_USB_PATH}/TARGET_${MBED_TARGET}/TOOLCHAIN_${PY_TOOLCHAIN_OPT})
   set(PY_USB_HOST_LIB_DIR ${MBED_USB_HOST_PATH}/TARGET_${MBED_TARGET}/TOOLCHAIN_${PY_TOOLCHAIN_OPT})
   #add statics
-  set(MBED_LIBS ${MBED_LIBS} libUSBDevice.a libUSBHost.a)
+  set(MBED_LIBS ${MBED_LIBS} ${PY_USB_LIB_DIR}/libUSBDevice.a ${PY_USB_HOST_LIB_DIR}/libUSBHost.a)
   #add build arg to py script command
   set(PY_LIBS ${PY_LIBS} --usb --usb_host)
 endif()
