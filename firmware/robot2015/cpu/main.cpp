@@ -5,12 +5,20 @@
 #include "logger.hpp"
 #include "radio.hpp"
 
+#define READ_SPI_16	0x8000
+#define SET_ADDR( x ) ((x)<<11)
+
 LocalFileSystem local("local");
 
 
 Ticker lifeLight;
 DigitalOut ledOne(LED1);
 DigitalOut ledTwo(LED2);
+DigitalOut drv_ncs(p20,1);
+DigitalOut drv_en(19,1);
+
+//  mosi, miso, sclk - connected to fpga
+SPI spi(p5, p6, p7);
 
 /*
  * some forward declarations to make the code easier to read
@@ -36,6 +44,26 @@ int main(void)
 	//initConsoleRoutine();
 
     fpgaInit();
+
+    spi.format(16,0);
+
+    uint16_t reg_config [2];
+    reg_config[0] = READ_SPI_16 | SET_ADDR(2) | (6<<6);
+    reg_config[1] = READ_SPI_16 | SET_ADDR(3) | (1<<5) | (1<<4);
+    
+    for (int i=0; i<2; i++)
+    	spi.write(reg_config[i]);
+
+    uint16_t reg_vals[2];
+    while(1){
+
+    	for (int i=0; i<2; i+)
+    		reg_vals[i] = 0x3FF & spi.write(SET_ADDR(i));
+
+    	printf("Address 0x00:\t0x%04\r\nAddress 0x01:\t0x%04\r\n", reg_vals[0], reg_vals[1]);
+    	wait(2);
+    }
+
 }
 
 /**
@@ -155,8 +183,6 @@ void initConsoleRoutine(void)
 }
 
 void fpgaInit() {
-    //  mosi, miso, sclk - connected to fpga
-    SPI spi(p5, p6, p7);
     DigitalOut fpgaCs(p18); //  chip select for SPI to fpga
     DigitalOut fpga_prog_b(p24);
 
@@ -190,7 +216,7 @@ void fpgaInit() {
     fclose(fp);
 
 
-    printf("got final byte from spi: %x\r\n", result);
+    printf("got final byte from spi: %x\r\n\tFPGA configured!\r\n", result);
 }
 
 /**
