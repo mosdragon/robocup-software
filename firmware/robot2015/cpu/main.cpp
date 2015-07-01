@@ -15,7 +15,7 @@ Ticker lifeLight;
 DigitalOut ledOne(LED1);
 DigitalOut ledTwo(LED2);
 DigitalOut drv_ncs(p20,1);
-DigitalOut drv_en(19,1);
+DigitalOut drv_en(p19,1);
 
 //  mosi, miso, sclk - connected to fpga
 SPI spi(p5, p6, p7);
@@ -59,6 +59,17 @@ int main(void)
 
     	for (int i=0; i<2; i+)
     		reg_vals[i] = 0x3FF & spi.write(SET_ADDR(i));
+
+/*
+    	bool fault = reg_vals[0]>>10;
+    	bool gvdd_uv = reg_vals[0]>>9;
+    	bool gvdd_uv = reg_vals[0]>>8;
+    	bool pvdd_uv = reg_vals[0]>>7;
+    	bool otsd = reg_vals[0]>>6;
+    	bool otw = reg_vals[0]>>5;
+    	bool  = reg_vals[0]>>4;
+    	bool gvdd_uv = reg_vals[0]>>3;
+    	*/
 
     	printf("Address 0x00:\t0x%04\r\nAddress 0x01:\t0x%04\r\n", reg_vals[0], reg_vals[1]);
     	wait(2);
