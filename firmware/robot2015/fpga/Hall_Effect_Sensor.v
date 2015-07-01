@@ -12,61 +12,72 @@ are ever encountere, all three motor phasese signaled to go into the high
 impedance (disconnected) state. Otherwise, the high phase, low phase, and high 
 impedance phase for each hall state is specified in the document linked below.
 
-//http://www.maxonmotor.com/medias/sys_master/root/8815461662750/EC-Technology-short-and-to-the-point-14-EN-32-35.pdf?attachment=true
+//http://www.maxonmotor.com/medias/sys_master/root/8815461662750/EC-Technology-short-and-to-the-point-14-EN-32-35.pdf?attachment<=true
 --Doho*/
 
-module Hall_Effect_Sensor(clock, h, u, z);
-input clock;
-input	[2:0]	h; 	//Hall Effect sensor input
-output 	[2:0]	u; 	//High phase output
-output	[2:0]	z;	//High Impedance output
+module Hall_Effect_Sensor ( hall, u, z );
 
-reg	[2:0]	u = 3'b000;
-reg	[2:0]	z = 3'b111;
+input    [2:0]  hall; 	// Hall Effect sensor input
+output   [2:0]	 u;		// High phase output
+output   [2:0]	 z;		// High Impedance output
 
+reg [2:0] u, z;
+reg [2:0] u_d, z_d;
 
-always @(posedge clock)
-		case(h)
+always @(*) begin
+
+		case(hall)
+			
 		3'b000	: 	begin
-					u = 3'b000;
-					z = 3'b111;
+					u_d <= 3'b000;
+					z_d <= 3'b111;
 					end
 
 		3'b111	: 	begin
-					u = 3'b000;
-					z = 3'b111;
+					u_d <= 3'b000;
+					z_d <= 3'b111;
 					end
 
 		3'b101	:	begin
-					u = 3'b100;
-					z = 3'b001;
+					u_d <= 3'b100;
+					z_d <= 3'b001;
 					end
 
 		3'b100	:	begin
-					u = 3'b100;
-					z = 3'b010;
+					u_d <= 3'b100;
+					z_d <= 3'b010;
 					end
 
 		3'b110	:	begin
-					u = 3'b010;
-					z = 3'b100;
+					u_d <= 3'b010;
+					z_d <= 3'b100;
 					end
 
 		3'b010	:	begin
-					u = 3'b010;
-					z = 3'b001;
+					u_d <= 3'b010;
+					z_d <= 3'b001;
 					end
 
 		3'b011	:	begin
-					u = 3'b001;
-					z = 3'b010;
+					u_d <= 3'b001;
+					z_d <= 3'b010;
 					end
 
 		3'b001	:	begin
-					u = 3'b001;
-					z = 3'b100;
+					u_d <= 3'b001;
+					z_d <= 3'b100;
 					end
+
+		default	:	begin
+					u_d <= 3'b000;
+					z_d <= 3'b111;
+					end
+
 		endcase
+
+		u <= u_d;
+		z <= z_d;
+end
 
 endmodule
 

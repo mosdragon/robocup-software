@@ -1,4 +1,4 @@
-`include "phase_driver.vh"
+//`include "phase_driver.vh"
 
 /**
 This module is responsible for driving one phase of the BLDC. It generates both
@@ -54,37 +54,44 @@ are do not alternate going on and off so there is no danger of shoot through.
 --Doho*/
 
 
+module Phase_Driver ( clk, duty_cycle, high_z, pwm_high, pwm_low );
 
-module Phase_Driver(clock, duty_cycle, high_z, pwm_high, pwm_low);
+parameter DEAD_TIME;            // dead time in units of clock ticks
+parameter COUNTER_WIDTH;        // bits available to counter
+parameter MAX_COUNTER;          // PWM period = MAX_COUNTER * clockPeriod
+parameter DUTY_CYCLE_WIDTH;     // bits available to duty_cycle
+parameter MAX_DUTY_CYCLE;       // Value represeting a duty cycle of 100%
+parameter DUTY_CYCLE_STEP_RES;  // ceil( MAX_COUNTER / MAX_DUTY_CYCLE ) 
 
-input clock;
-input [`DUTY_CYCLE_WIDTH - 1 : 0] duty_cycle;
-input high_z;
+input   clk;
+input   [DUTY_CYCLE_WIDTH-1:0] duty_cycle;
+input   high_z;
+output  pwm_high, pwm_low;
+// ===============================================  
 
-output pwm_high, pwm_low;
-wire pwm_high, pwm_low;
+// wire pwm_high, pwm_low;
 wire h, l;
 //wire deadtime;
 
-reg [`COUNTER_WIDTH - 1:0] counter = 0;
+reg [COUNTER_WIDTH-1:0] counter = 0;
 
-//assign deadtime  = (duty_cycle == `MAX_DUTY_CYCLE || duty_cycle == 0) ? 0 : `DEAD_TIME;
+//assign deadtime  = (duty_cycle == MAX_DUTY_CYCLE || duty_cycle == 0) ? 0 : DEAD_TIME;
 
-assign h = (counter + `DEAD_TIME < duty_cycle*`DUTY_CYCLE_STEP_RES) ? 1 : 0;
-assign l = (counter >= duty_cycle*`DUTY_CYCLE_STEP_RES && counter + `DEAD_TIME < `MAX_COUNTER) ? 1 : 0;
+assign h = ( ( counter + DEAD_TIME ) < ( duty_cycle * DUTY_CYCLE_STEP_RES ) ) ? 1 : 0;
+assign l = ( ( counter >= ( duty_cycle * DUTY_CYCLE_STEP_RES ) ) && ( ( counter + DEAD_TIME ) < MAX_COUNTER ) ) ? 1 : 0;
 
 
 assign  pwm_high = 	(high_z == 1) ? 0 : h;
 
 assign	pwm_low = 	(high_z == 1) ? 0 :
 					(duty_cycle == 0) ? 1 :
-					 l;
+                    l;
 
 
-always @(posedge clock)
+always @(posedge clk)
 begin
 	counter = counter + 1;
-	if (counter >= `MAX_COUNTER) counter = 0;
+	if (counter >= MAX_COUNTER) counter = 0;
 end
 
 
