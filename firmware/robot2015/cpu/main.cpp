@@ -55,11 +55,12 @@ int main(void)
     	spi.write(reg_config[i]);
 
     uint16_t reg_vals[2];
-    while(1){
 
-    	for (int i=0; i<2; i+)
+    while(1)
+    {
+
+    	for (int i=0; i<2; i++)
     		reg_vals[i] = 0x3FF & spi.write(SET_ADDR(i));
-
 /*
     	bool fault = reg_vals[0]>>10;
     	bool gvdd_uv = reg_vals[0]>>9;
@@ -67,11 +68,15 @@ int main(void)
     	bool pvdd_uv = reg_vals[0]>>7;
     	bool otsd = reg_vals[0]>>6;
     	bool otw = reg_vals[0]>>5;
-    	bool  = reg_vals[0]>>4;
-    	bool gvdd_uv = reg_vals[0]>>3;
+    	bool ah_oc = reg_vals[0]>>4;
+    	bool al_oc = reg_vals[0]>>3;
+    	bool bh_oc = reg_vals[0]>>2;
+    	bool bl_oc = reg_vals[0]>>1;
+    	bool ah_oc = reg_vals[0]>>0;
+    	bool al_oc = reg_vals[0]>>;
     	*/
 
-    	printf("Address 0x00:\t0x%04\r\nAddress 0x01:\t0x%04\r\n", reg_vals[0], reg_vals[1]);
+    	printf("Address 0x00:\t0x%04X\r\nAddress 0x01:\t0x%04X\r\n", reg_vals[0], reg_vals[1]);
     	wait(2);
     }
 
