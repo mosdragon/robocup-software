@@ -281,7 +281,7 @@ generate for (j = 0; j < NUM_PHASES; j = j + 1) begin
         ) motorPhaseDriver (
         .clk ( clk ) ,
         .duty_cycle ( ( u[j] == 1 ) ? duty_cycle_s : 1'b0 ) ,
-        .high_z ( ( z[j] && en_s ) ? 1'b1 : 1'b0 ) ,
+        .high_z ( ( z[j] || ~en_s ) ? 1'b1 : 1'b0 ) ,
         .pwm_high ( phaseH_s[j] ) ,
         .pwm_low ( phaseL_s[j] )
     );
