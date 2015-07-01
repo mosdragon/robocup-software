@@ -64,16 +64,23 @@ int main(void)
 /*
     	bool fault = reg_vals[0]>>10;
     	bool gvdd_uv = reg_vals[0]>>9;
-    	bool gvdd_uv = reg_vals[0]>>8;
-    	bool pvdd_uv = reg_vals[0]>>7;
-    	bool otsd = reg_vals[0]>>6;
-    	bool otw = reg_vals[0]>>5;
-    	bool ah_oc = reg_vals[0]>>4;
-    	bool al_oc = reg_vals[0]>>3;
-    	bool bh_oc = reg_vals[0]>>2;
-    	bool bl_oc = reg_vals[0]>>1;
-    	bool ah_oc = reg_vals[0]>>0;
-    	bool al_oc = reg_vals[0]>>;
+    	bool pvdd_uv = reg_vals[0]>>8;
+    	bool otsd = reg_vals[0]>>7;
+    	bool otw = reg_vals[0]>>6;
+    	bool ah_oc = reg_vals[0]>>5;
+    	bool al_oc = reg_vals[0]>>4;
+    	bool bh_oc = reg_vals[0]>>3;
+    	bool bl_oc = reg_vals[0]>>2;
+    	bool ah_oc = reg_vals[0]>>1;
+    	bool al_oc = reg_vals[0];
+    	*/
+
+/*
+    	printf("Fault:\t%u", fault);
+    	printf("GVDD_UV\t%u", gvdd_uv);
+    	printf("PVDD_UV\t%u", pvdd_uv);
+    	printf("GVDD_UV\t%u", );
+    	printf("GVDD_UV\t%u", gvdd_uv);
     	*/
 
     	printf("Address 0x00:\t0x%04X\r\nAddress 0x01:\t0x%04X\r\n", reg_vals[0], reg_vals[1]);
