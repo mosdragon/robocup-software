@@ -9,6 +9,8 @@ file(GLOB_RECURSE base2015_SRC
     "*.cpp"
 )
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+
 add_executable(base2015_elf ${base2015_SRC})
 add_dependencies(base2015_elf pre-build)
 target_link_libraries(base2015_elf common2015)
