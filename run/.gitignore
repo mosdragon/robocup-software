@@ -30,5 +30,6 @@ run_tests
 robot2015.bin
 base2015.bin
 test-*
+planner-visualizer
 
 /qt_vehicle_demo
