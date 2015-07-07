@@ -90,6 +90,7 @@ endif()
 
 # run all the other CMakeLists files
 add_subdirectory(common)
+add_subdirectory(planner-visualizer)
 add_subdirectory(soccer)
 add_subdirectory(simulator)
 add_subdirectory(logging)

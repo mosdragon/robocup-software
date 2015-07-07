@@ -170,6 +170,3 @@ add_dependencies(test-soccer googletest)
 
 # Don't build the tests by default
 set_target_properties(test-soccer PROPERTIES EXCLUDE_FROM_ALL TRUE)
-
-
-add_subdirectory(planning-visualizer)
