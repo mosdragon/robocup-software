@@ -1,3 +1,4 @@
 test:
   post:
     - echo "test" > $CIRCLE_ARTIFACTS/test.txt
+    - echo $CIRCLE_ARTIFACTS
