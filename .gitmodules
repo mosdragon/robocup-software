@@ -7,3 +7,6 @@
 [submodule "external/style-configs"]
 	path = external/style-configs
 	url = git://github.com/robojackets/style-configs
+[submodule "external/rrt"]
+	path = external/rrt
+	url = git://github.com/robojackets/rrt
